@@ -16,3 +16,19 @@ class EmployeeBase(BaseModel):
     employment_type: str = Field(..., pattern="^(full_time|part_time|contract)$")
     hire_date: date
     is_active: bool = True
+
+class EmployeeResponse(EmployeeBase):
+    id: UUID
+    employee_id: str
+    email: EmailStr
+    created_at: datetime
+    updated_at: datetime
+    
+    model_config = ConfigDict(from_attributes=True)
+
+class EmployeePaginatedResponse(BaseModel):
+    items: List[EmployeeResponse]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
