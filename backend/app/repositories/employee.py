@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import List, Tuple, Optional, Dict, Any
+from uuid import UUID
 from sqlalchemy import select, func, or_, desc, asc, text
 from app.models.employee import Employee
 
@@ -58,3 +59,33 @@ class EmployeeRepository:
         
         items = list(self.session.execute(query).scalars().all())
         return items, total
+
+    def get_by_id(self, id: UUID) -> Optional[Employee]:
+        return self.session.execute(
+            select(Employee).where(Employee.id == id, Employee.is_active == True)
+        ).scalar_one_or_none()
+
+    def get_by_email(self, email: str) -> Optional[Employee]:
+        return self.session.execute(
+            select(Employee).where(Employee.email == email)
+        ).scalar_one_or_none()
+        
+    def get_next_employee_id(self) -> str:
+        # Simple implementation for EMP-00001
+        result = self.session.execute(
+            select(func.max(Employee.employee_id)).where(Employee.employee_id.like('EMP-%'))
+        ).scalar()
+        
+        if not result:
+            return "EMP-00001"
+            
+        try:
+            num = int(result.split('-')[1])
+            return f"EMP-{num + 1:05d}"
+        except:
+            return "EMP-00001"
+
+    def create(self, employee: Employee) -> Employee:
+        self.session.add(employee)
+        self.session.flush()
+        return employee

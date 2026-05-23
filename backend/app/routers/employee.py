@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 from app.repositories.employee import EmployeeRepository
 from app.services.employee import EmployeeService
-from app.schemas.employee import EmployeePaginatedResponse
+from app.schemas.employee import EmployeePaginatedResponse, EmployeeResponse, EmployeeCreate
 from app.database import get_db
 from typing import Optional
 import math
@@ -37,3 +37,14 @@ def list_employees(
         "page_size": page_size,
         "total_pages": total_pages
     }
+
+@router.post("", response_model=EmployeeResponse, status_code=status.HTTP_201_CREATED)
+def create_employee(
+    data: EmployeeCreate,
+    service: EmployeeService = Depends(get_employee_service),
+    db: Session = Depends(get_db)
+):
+    employee = service.create_employee(data)
+    db.commit()
+    db.refresh(employee)
+    return employee

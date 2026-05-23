@@ -17,6 +17,9 @@ class EmployeeBase(BaseModel):
     hire_date: date
     is_active: bool = True
 
+class EmployeeCreate(EmployeeBase):
+    pass
+
 class EmployeeResponse(EmployeeBase):
     id: UUID
     employee_id: str
