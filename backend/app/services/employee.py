@@ -67,3 +67,7 @@ class EmployeeService:
             return self.repository.update(employee, update_data)
         except Exception as e:
             raise HTTPException(status_code=400, detail=str(e))
+    
+    def delete_employee(self, id: UUID) -> None:
+        employee = self.get_employee(id)
+        self.repository.soft_delete(employee)

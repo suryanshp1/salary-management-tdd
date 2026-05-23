@@ -68,3 +68,13 @@ def update_employee(
     db.commit()
     db.refresh(employee)
     return employee
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_employee(
+    id: UUID,
+    service: EmployeeService = Depends(get_employee_service),
+    db: Session = Depends(get_db)
+):
+    service.delete_employee(id)
+    db.commit()
+    return None

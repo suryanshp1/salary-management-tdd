@@ -95,3 +95,8 @@ class EmployeeRepository:
             setattr(employee, key, value)
         self.session.flush()
         return employee
+
+    def soft_delete(self, employee: Employee) -> Employee:
+        employee.is_active = False
+        self.session.flush()
+        return employee
