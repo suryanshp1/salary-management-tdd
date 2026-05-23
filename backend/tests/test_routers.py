@@ -42,3 +42,24 @@ def test_list_employees_case_insensitive_search(client, elaborate_employees):
     data = response.json()
     assert len(data["items"]) == 1
     assert data["items"][0]["last_name"] == "Alpha"
+
+# --- POST /api/v1/employees Tests ---
+
+def test_create_employee(client):
+    payload = {
+        "first_name": "Jane",
+        "last_name": "Smith",
+        "job_title": "Product Manager",
+        "department": "Product",
+        "country": "UK",
+        "salary": 120000,
+        "currency": "USD",
+        "employment_type": "full_time",
+        "hire_date": "2023-05-01",
+    }
+    response = client.post("/api/v1/employees", json=payload)
+    assert response.status_code == 201
+    data = response.json()
+    assert data["email"] == "jane.smith@company.com"
+    assert "id" in data
+    assert "employee_id" in data
