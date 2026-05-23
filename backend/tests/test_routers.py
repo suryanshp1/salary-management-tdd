@@ -63,3 +63,33 @@ def test_create_employee(client):
     assert data["email"] == "jane.smith@company.com"
     assert "id" in data
     assert "employee_id" in data
+
+# --- PUT /api/v1/employees/{id} Tests ---
+
+def test_update_employee(client, sample_employee):
+    payload = {
+        "first_name": "UpdatedName",
+        "job_title": "Updated Title"
+    }
+    response = client.put(f"/api/v1/employees/{sample_employee.id}", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["first_name"] == "UpdatedName"
+    assert data["job_title"] == "Updated Title"
+
+def test_update_employee_partial(client, elaborate_employees):
+    emp_id = elaborate_employees[0].id
+    original_first_name = elaborate_employees[0].first_name
+    
+    # Update only the salary
+    response = client.put(f"/api/v1/employees/{emp_id}", json={"salary": 999999})
+    assert response.status_code == 200
+    data = response.json()
+    assert float(data["salary"]) == 999999.0
+    # First name should remain untouched
+    assert data["first_name"] == original_first_name
+
+def test_update_employee_invalid_type(client, elaborate_employees):
+    emp_id = elaborate_employees[0].id
+    response = client.put(f"/api/v1/employees/{emp_id}", json={"salary": "not-a-number"})
+    assert response.status_code == 422 # Pydantic validation error
