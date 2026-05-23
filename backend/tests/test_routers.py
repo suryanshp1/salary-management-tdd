@@ -93,3 +93,13 @@ def test_update_employee_invalid_type(client, elaborate_employees):
     emp_id = elaborate_employees[0].id
     response = client.put(f"/api/v1/employees/{emp_id}", json={"salary": "not-a-number"})
     assert response.status_code == 422 # Pydantic validation error
+
+# --- DELETE /api/v1/employees/{id} Tests ---
+
+def test_delete_employee(client, sample_employee):
+    # Delete the employee
+    response = client.delete(f"/api/v1/employees/{sample_employee.id}")
+    assert response.status_code == 204
+    # Verify it's gone
+    response = client.get(f"/api/v1/employees/{sample_employee.id}")
+    assert response.status_code == 404
