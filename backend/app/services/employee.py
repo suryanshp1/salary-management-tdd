@@ -3,7 +3,7 @@ from typing import List, Tuple, Optional, Dict, Any
 from uuid import UUID
 from fastapi import HTTPException
 from app.models.employee import Employee
-from app.schemas.employee import EmployeeCreate
+from app.schemas.employee import EmployeeCreate, EmployeeUpdate
 import re
 
 class EmployeeService:
@@ -24,6 +24,12 @@ class EmployeeService:
         return self.repository.get_all(
             page, page_size, search, country, department, job_title, sort_by, sort_order
         )
+
+    def get_employee(self, id: UUID) -> Employee:
+        employee = self.repository.get_by_id(id)
+        if not employee:
+            raise HTTPException(status_code=404, detail="Employee not found")
+        return employee
 
     def create_employee(self, data: EmployeeCreate) -> Employee:
         # Generate email
@@ -47,5 +53,17 @@ class EmployeeService:
         
         try:
             return self.repository.create(employee)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=str(e))
+
+    def update_employee(self, id: UUID, data: EmployeeUpdate) -> Employee:
+        employee = self.get_employee(id)
+        update_data = data.model_dump(exclude_unset=True)
+        
+        if not update_data:
+            return employee
+            
+        try:
+            return self.repository.update(employee, update_data)
         except Exception as e:
             raise HTTPException(status_code=400, detail=str(e))

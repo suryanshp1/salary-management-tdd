@@ -20,6 +20,19 @@ class EmployeeBase(BaseModel):
 class EmployeeCreate(EmployeeBase):
     pass
 
+class EmployeeUpdate(BaseModel):
+    first_name: Optional[str] = Field(None, min_length=1, max_length=100)
+    last_name: Optional[str] = Field(None, min_length=1, max_length=100)
+    job_title: Optional[str] = Field(None, min_length=1, max_length=150)
+    department: Optional[str] = Field(None, min_length=1, max_length=100)
+    country: Optional[str] = Field(None, min_length=1, max_length=100)
+    city: Optional[str] = Field(None, max_length=100)
+    salary: Optional[Decimal] = Field(None, gt=0)
+    currency: Optional[str] = Field(None, min_length=3, max_length=3)
+    employment_type: Optional[str] = Field(None, pattern="^(full_time|part_time|contract)$")
+    hire_date: Optional[date] = None
+    is_active: Optional[bool] = None
+
 class EmployeeResponse(EmployeeBase):
     id: UUID
     employee_id: str

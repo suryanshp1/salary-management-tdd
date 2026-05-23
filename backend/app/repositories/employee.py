@@ -89,3 +89,9 @@ class EmployeeRepository:
         self.session.add(employee)
         self.session.flush()
         return employee
+
+    def update(self, employee: Employee, data: dict) -> Employee:
+        for key, value in data.items():
+            setattr(employee, key, value)
+        self.session.flush()
+        return employee

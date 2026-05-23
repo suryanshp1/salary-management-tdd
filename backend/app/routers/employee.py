@@ -2,9 +2,10 @@ from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 from app.repositories.employee import EmployeeRepository
 from app.services.employee import EmployeeService
-from app.schemas.employee import EmployeePaginatedResponse, EmployeeResponse, EmployeeCreate
+from app.schemas.employee import EmployeePaginatedResponse, EmployeeResponse, EmployeeCreate, EmployeeUpdate
 from app.database import get_db
 from typing import Optional
+from uuid import UUID
 import math
 
 router = APIRouter(prefix="/employees", tags=["employees"])
@@ -45,6 +46,25 @@ def create_employee(
     db: Session = Depends(get_db)
 ):
     employee = service.create_employee(data)
+    db.commit()
+    db.refresh(employee)
+    return employee
+
+@router.get("/{id}", response_model=EmployeeResponse)
+def get_employee(
+    id: UUID,
+    service: EmployeeService = Depends(get_employee_service)
+):
+    return service.get_employee(id)
+
+@router.put("/{id}", response_model=EmployeeResponse)
+def update_employee(
+    id: UUID,
+    data: EmployeeUpdate,
+    service: EmployeeService = Depends(get_employee_service),
+    db: Session = Depends(get_db)
+):
+    employee = service.update_employee(id, data)
     db.commit()
     db.refresh(employee)
     return employee
