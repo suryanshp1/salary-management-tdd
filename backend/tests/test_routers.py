@@ -103,3 +103,42 @@ def test_delete_employee(client, sample_employee):
     # Verify it's gone
     response = client.get(f"/api/v1/employees/{sample_employee.id}")
     assert response.status_code == 404
+
+# Dashboard Insights Cases
+def test_salary_by_job_title(client, sample_employee):
+    response = client.get("/api/v1/insights/salary-by-job-title")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) >= 1
+    assert data[0]["job_title"] == "Software Engineer"
+    assert float(data[0]["avg_salary"]) == 100000.0
+
+def test_department_distribution(client, sample_employee):
+    response = client.get("/api/v1/insights/department-distribution")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) >= 1
+    assert data[0]["department"] == "Engineering"
+
+def test_country_distribution(client, sample_employee):
+    response = client.get("/api/v1/insights/country-distribution")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) >= 1
+    assert data[0]["country"] == "US"
+
+def test_salary_ranges(client, sample_employee):
+    response = client.get("/api/v1/insights/salary-ranges")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    assert len(data) > 0
+    assert "range_label" in data[0]
+    assert "count" in data[0]
+
+def test_top_earners(client, sample_employee):
+    response = client.get("/api/v1/insights/top-earners?limit=10")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["first_name"] == "John"
