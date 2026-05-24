@@ -104,6 +104,27 @@ def test_delete_employee(client, sample_employee):
     response = client.get(f"/api/v1/employees/{sample_employee.id}")
     assert response.status_code == 404
 
+# Additional CRUD Edge Cases
+def test_create_employee_validation_error(client):
+    payload = {
+        "first_name": "Invalid",
+        # Missing required fields
+    }
+    response = client.post("/api/v1/employees", json=payload)
+    assert response.status_code == 422 # Unprocessable Entity
+
+def test_get_employee_not_found(client):
+    response = client.get("/api/v1/employees/00000000-0000-0000-0000-000000000000")
+    assert response.status_code == 404
+
+def test_update_employee_not_found(client):
+    response = client.put("/api/v1/employees/00000000-0000-0000-0000-000000000000", json={"first_name": "x"})
+    assert response.status_code == 404
+
+def test_delete_employee_not_found(client):
+    response = client.delete("/api/v1/employees/00000000-0000-0000-0000-000000000000")
+    assert response.status_code == 404
+
 # Dashboard Insights Cases
 def test_salary_by_job_title(client, sample_employee):
     response = client.get("/api/v1/insights/salary-by-job-title")
