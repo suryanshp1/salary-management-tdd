@@ -71,3 +71,34 @@ class EmployeeService:
     def delete_employee(self, id: UUID) -> None:
         employee = self.get_employee(id)
         self.repository.soft_delete(employee)
+
+    # Insights delegates
+    def get_salary_by_country(self) -> List[Dict[str, Any]]:
+        return self.repository.get_salary_by_country()
+        
+    def get_salary_by_job_title(self, country: Optional[str] = None) -> List[Dict[str, Any]]:
+        return self.repository.get_salary_by_job_title(country)
+        
+    def get_department_distribution(self) -> List[Dict[str, Any]]:
+        return self.repository.get_department_distribution()
+        
+    def get_country_distribution(self) -> List[Dict[str, Any]]:
+        return self.repository.get_country_distribution()
+        
+    def get_salary_ranges(self) -> List[Dict[str, Any]]:
+        return self.repository.get_salary_ranges()
+        
+    def get_summary(self) -> Dict[str, Any]:
+        return self.repository.get_summary()
+        
+    def get_top_earners(self, limit: int = 10) -> List[Employee]:
+        return self.repository.get_top_earners(limit)
+        
+    def get_distinct_countries(self) -> List[str]:
+        return self.repository.get_distinct_countries()
+        
+    def get_distinct_departments(self) -> List[str]:
+        return self.repository.get_distinct_departments()
+        
+    def get_distinct_job_titles(self) -> List[str]:
+        return self.repository.get_distinct_job_titles()

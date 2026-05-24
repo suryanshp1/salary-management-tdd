@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
-from app.routers import employee
+from app.routers import employee, insights
 
 settings = get_settings()
 
@@ -22,6 +22,8 @@ app.add_middleware(
 
 # Include routers
 app.include_router(employee.router, prefix="/api/v1")
+app.include_router(insights.router, prefix="/api/v1")
+app.include_router(insights.ref_router, prefix="/api/v1")
 
 @app.get("/health", tags=["system"])
 def health_check():

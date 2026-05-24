@@ -48,3 +48,45 @@ class EmployeePaginatedResponse(BaseModel):
     page: int
     page_size: int
     total_pages: int
+
+# Analytics Schemas
+class SalaryByCountry(BaseModel):
+    country: str
+    min_salary: Decimal
+    max_salary: Decimal
+    avg_salary: Decimal
+    median_salary: Decimal
+    employee_count: int
+
+class SalaryByJobTitle(BaseModel):
+    job_title: str
+    avg_salary: Decimal
+    employee_count: int
+
+class DepartmentDistribution(BaseModel):
+    department: str
+    employee_count: int
+
+class CountryDistribution(BaseModel):
+    country: str
+    employee_count: int
+
+class SalaryRange(BaseModel):
+    range_label: str
+    count: int
+
+class SalarySummary(BaseModel):
+    total_employees: int
+    avg_salary: Decimal
+    total_payroll: Decimal
+    active_countries: int
+    active_departments: int
+
+class TopEarner(BaseModel):
+    id: UUID
+    first_name: str
+    last_name: str
+    job_title: str
+    department: str
+    country: str
+    salary: Decimal
